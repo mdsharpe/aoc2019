@@ -17,6 +17,17 @@ namespace day1
         }
 
         private static int CalculateFuel(int mass)
-            => (int)Math.Floor((decimal)mass / 3) - 2;
+        {
+            var fuel = (int)Math.Floor((decimal)mass / 3) - 2;
+
+            if (fuel <= 0)
+            {
+                return 0;
+            }
+
+            fuel += CalculateFuel(fuel);
+
+            return fuel;
+        }
     }
 }
