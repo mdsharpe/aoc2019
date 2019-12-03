@@ -20,7 +20,7 @@ namespace day2
 
         private static void WriteOutput(int[] program, int input1, int input2)
         {
-            Console.WriteLine($"{input1 * 100 + input2} => {Run(program, 12, 2)[0]}");
+            Console.WriteLine($"{input1 * 100 + input2} => {Run(program, input1, input2)[0]}");
         }
 
         private static void FindInput(int[] program, int output)
