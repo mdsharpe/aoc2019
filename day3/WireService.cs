@@ -45,8 +45,54 @@ namespace day3
             }
         }
 
+        public bool GetAreParallel(WireSegment s1, WireSegment s2)
+            => s1.Orientation == s2.Orientation;
+
+        public bool GetHasIntersection(WireSegment s1, WireSegment s2)
+        {
+            if (GetAreParallel(s1, s2))
+            {
+                return false;
+            }
+
+            switch (s1.Orientation)
+            {
+                case Orientation.Horizontal:
+                    return GetIsBetween(s1.From.X, s1.To.X, s2.From.X)
+                        && GetIsBetween(s2.From.Y, s2.To.Y, s1.From.Y);
+
+                case Orientation.Vertical:
+                    return GetIsBetween(s2.From.X, s2.To.X, s1.From.X)
+                        && GetIsBetween(s1.From.Y, s1.To.Y, s2.From.Y);
+
+                default:
+                    throw new InvalidOperationException();
+            }
+        }
+
+        public bool GetIsBetween(int from, int to, int c)
+        {
+            if (from < to)
+            {
+                return from <= c && c <= to;
+            }
+            else if (from > to)
+            {
+                return to <= c && c <= from;
+            }
+            else
+            {
+                return c == from;
+            }
+        }
+
         public IEnumerable<Coordinate> GetIntersections(WireSegment s1, WireSegment s2)
         {
+            if (GetAreParallel(s1, s2))
+            {
+                return Enumerable.Empty<Coordinate>();
+            }
+
             return from c1 in s1.EnumerateConstitutentCoordinates()
                    from c2 in s2.EnumerateConstitutentCoordinates()
                    where _coordinateEqualityComparer.Equals(c1, c2)

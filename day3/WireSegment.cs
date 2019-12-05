@@ -15,6 +15,25 @@ namespace day3
         public Coordinate From { get; }
         public Coordinate To { get; }
 
+        public Orientation Orientation
+        {
+            get
+            {
+                if (From.Y == To.Y)
+                {
+                    return Orientation.Horizontal;
+                }
+                else if (From.X == To.X)
+                {
+                    return Orientation.Vertical;
+                }
+                else
+                {
+                    throw new InvalidOperationException();
+                }
+            }
+        }
+
         public IEnumerable<Coordinate> EnumerateConstitutentCoordinates()
         {
             if (From.X == To.X)
