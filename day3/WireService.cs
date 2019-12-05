@@ -15,35 +15,41 @@ namespace day3
 
         public IEnumerable<WireSegment> InterpretInstructions(IEnumerable<PathInstruction> pathSegments)
         {
-            int x = 0, y = 0, startLength = 0;
+            int xFrom = 0,
+                yFrom = 0,
+                xTo = 0,
+                yTo = 0,
+                previousDist = 0;
 
             foreach (var segment in pathSegments)
             {
-                int xFrom = x, yFrom = y;
-
                 switch (segment.Direction)
                 {
                     case Direction.Up:
-                        y += segment.Length;
+                        yFrom += 1;
+                        yTo = yFrom + (segment.Length - 1);
                         break;
                     case Direction.Right:
-                        x += segment.Length;
+                        xFrom += 1;
+                        xTo = xFrom + (segment.Length - 1);
                         break;
                     case Direction.Down:
-                        y -= segment.Length;
+                        yFrom -= 1;
+                        yTo = yFrom - (segment.Length - 1);
                         break;
                     case Direction.Left:
-                        x -= segment.Length;
+                        xFrom -= 1;
+                        xTo = xFrom - (segment.Length - 1);
                         break;
                     default:
                         throw new InvalidOperationException();
                 }
 
-                int xTo = x, yTo = y;
+                yield return new WireSegment(xFrom, yFrom, xTo, yTo, previousDist);
 
-                yield return new WireSegment(xFrom, yFrom, xTo, yTo, startLength);
-
-                startLength += segment.Length;
+                previousDist += segment.Length;
+                xFrom = xTo;
+                yFrom = yTo;
             }
         }
 

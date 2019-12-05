@@ -6,16 +6,16 @@ namespace day3
 {
     class WireSegment
     {
-        public WireSegment(int xFrom, int yFrom, int xTo, int yTo, int startLength)
+        public WireSegment(int xFrom, int yFrom, int xTo, int yTo, int previousDist)
         {
             From = new Coordinate(xFrom, yFrom);
             To = new Coordinate(xTo, yTo);
-            StartLength = startLength;
+            PreviousDist = previousDist;
         }
 
         public Coordinate From { get; }
         public Coordinate To { get; }
-        public int StartLength { get; }
+        public int PreviousDist { get; }
 
         public Orientation Orientation
         {
@@ -40,22 +40,26 @@ namespace day3
         {
             if (From.X == To.X)
             {
-                return Enumerable.Range(
-                    Math.Min(From.Y, To.Y),
-                    Math.Max(From.Y, To.Y) - Math.Min(From.Y, To.Y))
+                var range = From.Y < To.Y
+                    ? Enumerable.Range(From.Y, (To.Y - From.Y) + 1)
+                    : Enumerable.Range(To.Y, (From.Y - To.Y) + 1).Reverse();
+
+                return range
                     .Select((y, i) => new CoordinateOnWire(
                         new Coordinate(From.X, y),
-                        StartLength + i
+                        PreviousDist + (i + 1)
                     ));
             }
             else if (From.Y == To.Y)
             {
-                return Enumerable.Range(
-                    Math.Min(From.X, To.X),
-                    Math.Max(From.X, To.X) - Math.Min(From.X, To.X))
+                var range = From.X < To.X
+                    ? Enumerable.Range(From.X, (To.X - From.X) + 1)
+                    : Enumerable.Range(To.X, (From.X - To.X) + 1).Reverse();
+
+                return range
                     .Select((x, i) => new CoordinateOnWire(
                         new Coordinate(x, From.Y),
-                        StartLength + i
+                        PreviousDist + (i + 1)
                     ));
             }
             else
