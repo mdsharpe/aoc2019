@@ -15,22 +15,22 @@ namespace day3
 
         public IEnumerable<WireSegment> InterpretInstructions(IEnumerable<PathInstruction> pathSegments)
         {
-            int x = 0, y = 0;
+            int x = 0, y = 0, startLength = 0;
 
             foreach (var segment in pathSegments)
             {
-                int x1 = x, y1 = y;
+                int xFrom = x, yFrom = y;
 
                 switch (segment.Direction)
                 {
                     case Direction.Up:
-                        y -= segment.Length;
+                        y += segment.Length;
                         break;
                     case Direction.Right:
                         x += segment.Length;
                         break;
                     case Direction.Down:
-                        y += segment.Length;
+                        y -= segment.Length;
                         break;
                     case Direction.Left:
                         x -= segment.Length;
@@ -39,9 +39,11 @@ namespace day3
                         throw new InvalidOperationException();
                 }
 
-                int x2 = x, y2 = y;
+                int xTo = x, yTo = y;
 
-                yield return new WireSegment(x1, y1, x2, y2);
+                yield return new WireSegment(xFrom, yFrom, xTo, yTo, startLength);
+
+                startLength += segment.Length;
             }
         }
 
@@ -86,17 +88,17 @@ namespace day3
             }
         }
 
-        public IEnumerable<Coordinate> GetIntersections(WireSegment s1, WireSegment s2)
+        public IEnumerable<Intersection> GetIntersections(WireSegment s1, WireSegment s2)
         {
             if (GetAreParallel(s1, s2))
             {
-                return Enumerable.Empty<Coordinate>();
+                return Enumerable.Empty<Intersection>();
             }
 
             return from c1 in s1.EnumerateConstitutentCoordinates()
                    from c2 in s2.EnumerateConstitutentCoordinates()
-                   where _coordinateEqualityComparer.Equals(c1, c2)
-                   select c1;
+                   where _coordinateEqualityComparer.Equals(c1.Coordinate, c2.Coordinate)
+                   select new Intersection(c1.Coordinate, c1.WireDist, c2.WireDist);
         }
 
         private PathInstruction ParseInstruction(string instructionString)

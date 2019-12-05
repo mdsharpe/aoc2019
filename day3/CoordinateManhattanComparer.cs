@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 
 namespace day3 {
-    class CoordinateComparer : IComparer<Coordinate> {
+    class CoordinateManhattanComparer : IComparer<Coordinate> {
         public int Compare(Coordinate c1, Coordinate c2) {
             if (c1 == null || c2 == null) {
                 throw new ArgumentNullException();

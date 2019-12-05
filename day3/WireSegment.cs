@@ -6,14 +6,16 @@ namespace day3
 {
     class WireSegment
     {
-        public WireSegment(int x1, int y1, int x2, int y2)
+        public WireSegment(int xFrom, int yFrom, int xTo, int yTo, int startLength)
         {
-            From = new Coordinate(x1, y1);
-            To = new Coordinate(x2, y2);
+            From = new Coordinate(xFrom, yFrom);
+            To = new Coordinate(xTo, yTo);
+            StartLength = startLength;
         }
 
         public Coordinate From { get; }
         public Coordinate To { get; }
+        public int StartLength { get; }
 
         public Orientation Orientation
         {
@@ -34,21 +36,27 @@ namespace day3
             }
         }
 
-        public IEnumerable<Coordinate> EnumerateConstitutentCoordinates()
+        public IEnumerable<CoordinateOnWire> EnumerateConstitutentCoordinates()
         {
             if (From.X == To.X)
             {
                 return Enumerable.Range(
                     Math.Min(From.Y, To.Y),
                     Math.Max(From.Y, To.Y) - Math.Min(From.Y, To.Y))
-                    .Select(y => new Coordinate(From.X, y));
+                    .Select((y, i) => new CoordinateOnWire(
+                        new Coordinate(From.X, y),
+                        StartLength + i
+                    ));
             }
             else if (From.Y == To.Y)
             {
                 return Enumerable.Range(
                     Math.Min(From.X, To.X),
                     Math.Max(From.X, To.X) - Math.Min(From.X, To.X))
-                    .Select(x => new Coordinate(x, From.Y));
+                    .Select((x, i) => new CoordinateOnWire(
+                        new Coordinate(x, From.Y),
+                        StartLength + i
+                    ));
             }
             else
             {
